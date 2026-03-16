@@ -1,0 +1,197 @@
+<script>
+
+// Scroll animations
+const observerOptions = { threshold: 0.15 };
+
+const observer = new IntersectionObserver((entries)=>{
+entries.forEach(entry=>{
+if(entry.isIntersecting){
+
+entry.target.classList.add("visible");
+
+}
+});
+},observerOptions);
+
+document.querySelectorAll(
+'.fade-up,.fade-left,.fade-right,.scale-in,.stagger-children'
+).forEach(el=>{
+
+observer.observe(el);
+
+});
+
+
+// Carousel
+
+const carouselPositions = {
+
+imran:0,
+chaitanya:0,
+featured:0
+
+};
+
+function scrollCarousel(id,dir){
+
+const track=document.getElementById("carousel-"+id);
+
+if(!track)return;
+
+const step=300;
+
+const maxScroll=
+track.scrollWidth-
+track.parentElement.offsetWidth;
+
+carouselPositions[id]=Math.max(
+
+0,
+
+Math.min(
+
+maxScroll,
+
+carouselPositions[id]+(dir*step)
+
+)
+
+);
+
+track.style.transform=
+`translateX(-${carouselPositions[id]}px)`;
+
+}
+
+
+// Drag support
+
+['imran','chaitanya','featured']
+.forEach(id=>{
+
+const track=
+document.getElementById(
+'carousel-'+id
+);
+
+if(!track)return;
+
+let isDragging=false;
+
+let startX=0;
+
+let startScroll=0;
+
+track.addEventListener(
+
+'mousedown',
+
+e=>{
+
+isDragging=true;
+
+startX=e.pageX;
+
+startScroll=carouselPositions[id];
+
+}
+
+);
+
+track.addEventListener(
+
+'mousemove',
+
+e=>{
+
+if(!isDragging)return;
+
+const diff=startX-e.pageX;
+
+const maxScroll=
+track.scrollWidth-
+track.parentElement.offsetWidth;
+
+carouselPositions[id]=Math.max(
+
+0,
+
+Math.min(
+
+maxScroll,
+
+startScroll+diff
+
+)
+
+);
+
+track.style.transform=
+`translateX(-${carouselPositions[id]}px)`;
+
+}
+
+);
+
+track.addEventListener(
+'mouseup',
+()=>isDragging=false
+);
+
+track.addEventListener(
+'mouseleave',
+()=>isDragging=false
+);
+
+});
+
+
+// Particles
+
+const container=
+document.getElementById(
+"particles-container"
+);
+
+if(container){
+
+for(let i=0;i<20;i++){
+
+const p=document.createElement("div");
+
+p.className="particle";
+
+const size=Math.random()*4+1;
+
+p.style.cssText=`
+
+width:${size}px;
+height:${size}px;
+
+left:${Math.random()*100}%;
+
+top:${50+Math.random()*50}%;
+
+background:${
+Math.random()>0.5
+? '#e11d48'
+:'#06b6d4'
+};
+
+animation-delay:
+${Math.random()*8}s;
+
+`;
+
+container.appendChild(p);
+
+}
+
+}
+
+
+// Icons
+
+lucide.createIcons();
+
+</script>
